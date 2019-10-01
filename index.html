@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>Let's make some friends!</title>
+    <link rel="icon" href="bill_cipher.png" sizes="16x16" type="image/png">
+  </head>
+  <body>
+    <h1>Let's make some friends!</h1>
+    <div id="gameport" tabindex="0"></div>
+    <div id="speechtext"></div>
+    <div id="winmessage"></div>
+
+    <h1>How to play:</h1>
+    <p>Use your arrow keys or WASD to move Bill around to meet new friends!</p>
+
+    <div id="disqus_thread"></div>
+
+    <script>
+
+    (function()
+    {
+
+    var d = document, s = d.createElement('script');
+
+    s.src = 'https://nau-cs413.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+
+    (d.head || d.body).appendChild(s);
+
+    })();
+
+    </script>
+
+    <script src="tweenjs.min.js"></script>
+    <script src="pixi.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>
