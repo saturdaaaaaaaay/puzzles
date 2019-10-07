@@ -5,10 +5,47 @@ gameport.appendChild(renderer.view);
 
 var stage = new PIXI.Container();
 
-var star = new PIXI.Sprite(PIXI.Texture.fromImage("Star_Guy.png"));
-var square = new PIXI.Sprite(PIXI.Texture.fromImage("Square_Man.png"));
-var circle = new PIXI.Sprite(PIXI.Texture.fromImage("circle_dude.png"));
-var bill = new PIXI.Sprite(PIXI.Texture.fromImage("bill_cipher.png"));
+var background = new PIXI.Sprite(PIXI.Texture.fromImage("background.png"));
+background.position.x = 0;
+background.position.y = 0;
+
+stage.addChild(background);
+
+PIXI.loader
+  .add("assets.json")
+  .load(ready);
+
+var frames = [];
+
+var starTexture;
+var squareTexture;
+var circleTexture;
+var billTexture;
+
+var star; //3
+var square; //5
+var circle; //7
+var bill; //1
+
+function ready()
+{
+  starTexture = "bill_and_friends3.png";
+  squareTexture = "bill_and_friends5.png";
+  circleTexture = "bill_and_friends7.png";
+  billTexture = "bill_and_friends1.png";
+
+  star = new PIXI.Sprite(PIXI.Texture.fromFrame(starTexture));
+  square = new PIXI.Sprite(PIXI.Texture.fromFrame(squareTexture));
+  circle = new PIXI.Sprite(PIXI.Texture.fromFrame(circleTexture));
+  bill = new PIXI.Sprite(PIXI.Texture.fromFrame(billTexture));
+}
+
+/*
+var star = new PIXI.Sprite(PIXI.Texture.fromFrame(starTexture)); //3
+var square = new PIXI.Sprite(PIXI.Texture.fromFrame(squareTexture)); //5
+var circle = new PIXI.Sprite(PIXI.Texture.fromFrame(circleTexture)); //7
+var bill = new PIXI.Sprite(PIXI.Texture.fromFrame(billTexture)); //1
+*/
 
 var starText = [
     "Oh, I'm sorry - I'm too cool to hang out with you.",
