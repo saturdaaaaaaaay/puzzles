@@ -17,7 +17,6 @@ gameScene.visible = false;
 instructScene.visible = false;
 gameOverScene.visible = false;
 
-//var button = new PIXI.Sprite(PIXI.Texture.fromImage("hero.png"));
 var titleText = new PIXI.Text("Let's make friends!");
 var startText = new PIXI.Text("Click here to start!");
 var howToPlay = new PIXI.Text("How to play");
@@ -47,12 +46,20 @@ function dispGame(e)
   titleScene.visible = false;
   instructScene.visible = false;
   gameScene.visible = true;
+  gameOverScene.visible = false;
 }
 
 function dispInstruct(e)
 {
   instructScene.visible = true;
   titleScene.visible = false;
+}
+
+function dispTitle()
+{
+  titleScene.visible = true;
+  instructScene.visible = false;
+  gameScene = false;
 }
 
 startText.interactive = true;
@@ -145,18 +152,18 @@ window.addEventListener("keydown", function(e) {
 
 function keydownEventHandler(e)
 {
-
   var key = e.keyCode;
-  var duration = 100;
+  var duration = 150;
+  var boundary = 50;
   var leaveText = "You're not allowed to leave.";
   var billX;
   var billY;
 
   if (key == 87 || key == 38)
   { // W key
-    if (bill.position.y - 10 > 0)
+    if (bill.position.y - boundary > 0)
     {
-      billY = bill.position.y - 10;
+      billY = bill.position.y - boundary;
     }
     else
     {
@@ -166,9 +173,9 @@ function keydownEventHandler(e)
 
   if (key == 83 || key == 40)
   { // S key
-    if (bill.position.y + 10 < 380)
+    if (bill.position.y + boundary < 380)
     {
-      billY = bill.position.y + 10;
+      billY = bill.position.y + boundary;
     }
     else
     {
@@ -178,9 +185,9 @@ function keydownEventHandler(e)
 
   if (key == 65 || key == 37)
   { // A key
-    if (bill.position.x - 10 > 0)
+    if (bill.position.x - boundary > 0)
     {
-      billX = bill.position.x - 10;
+      billX = bill.position.x - boundary;
     }
     else
     {
@@ -190,9 +197,9 @@ function keydownEventHandler(e)
 
   if (key == 68 || key == 39)
    { // D key
-     if (bill.position.x + 10 < 380)
+     if (bill.position.x + boundary < 380)
      {
-       billX = bill.position.x + 10;
+       billX = bill.position.x + boundary;
      }
      else
      {
@@ -292,25 +299,25 @@ function animate()
 
   if (squareFriend)
   {
-    square.position.x = bill.position.x + 20;
-    square.position.y = bill.position.y - 10;
+    square.position.x = bill.position.x + 30;
+    square.position.y = bill.position.y - 30;
   }
   if (starFriend)
   {
-    star.position.x = bill.position.x - 20;
-    star.position.y = bill.position.y - 10;
+    star.position.x = bill.position.x - 30;
+    star.position.y = bill.position.y - 30;
   }
   if (circleFriend)
   {
     circle.position.x = bill.position.x;
-    circle.position.y = bill.position.y + 30;
+    circle.position.y = bill.position.y + 50;
   }
 
   if (squareFriend && starFriend && circleFriend)
   {
     document.getElementById("winmessage").innerHTML =
       "Congrats! Now you have friends."
-    end();
+    dispGameOver();
   }
 
   document.getElementById("speechtext").innerHTML = speech;
@@ -320,9 +327,46 @@ function animate()
 }
 animate();
 
-function end()
+function dispGameOver()
 {
   gameScene.visible = false;
   gameOverScene.visible = true;
   gameOverScene.addChild(bill);
+  gameOverScene.addChild(star);
+  gameOverScene.addChild(square);
+  gameOverScene.addChild(circle);
+  var playAgainText = new PIXI.Text("Play again?");
+  gameOverScene.addChild(playAgainText);
+  playAgainText.position.x = 100;
+  playAgainText.position.y = 100;
+  playAgainText.interactive = true;
+  playAgainText.on('mousedown', reset);
+}
+function reset()
+{
+  gameScene.addChild(bill);
+  bill.position.x = 200;
+  bill.position.y = 200;
+
+  gameScene.addChild(star);
+  star.position.x = 295;
+  star.position.y = 295;
+
+  gameScene.addChild(circle);
+  circle.position.x = 45;
+  circle.position.y = 270;
+
+  gameScene.addChild(square);
+  square.position.x = 180;
+  square.position.y = 90;
+
+  starCount = 0;
+  squareCount = 0;
+  circleCount = 0;
+
+  starFriend = false;
+  squareFriend = false;
+  circleFriend = false;
+
+  dispGame();
 }
