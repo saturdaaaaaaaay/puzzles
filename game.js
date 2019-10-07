@@ -4,12 +4,17 @@ var renderer = PIXI.autoDetectRenderer(400, 400, {backgroundColor: 0xe6b5eb});
 gameport.appendChild(renderer.view);
 
 var stage = new PIXI.Container();
+var start = new PIXI.Container();
 
 var background = new PIXI.Sprite(PIXI.Texture.fromImage("background.png"));
 background.position.x = 0;
 background.position.y = 0;
 
 stage.addChild(background);
+var text = new PIXI.Text('',{fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'});
+stage.addChild(text);
+text.position.x = 23;
+text.position.y = 34;
 
 var starText = [
     "Oh, I'm sorry - I'm too cool to hang out with you.",
@@ -239,6 +244,7 @@ function animate()
   }
 
   document.getElementById("speechtext").innerHTML = speech;
+  text = speech;
 
   renderer.render(stage);
 }
