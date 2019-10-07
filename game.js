@@ -4,86 +4,29 @@ var renderer = PIXI.autoDetectRenderer(400, 400, {backgroundColor: 0xe6b5eb});
 gameport.appendChild(renderer.view);
 
 var stage = new PIXI.Container();
-var titleScene = new PIXI.Container();
-var instructScene = new PIXI.Container();
-var gameScene = new PIXI.Container();
-var gameOverScene = new PIXI.Container();
 
-stage.addChild(titleScene);
-stage.addChild(instructScene);
-stage.addChild(gameScene);
-stage.addChild(gameOverScene);
-gameScene.visible = false;
-instructScene.visible = false;
-gameOverScene.visible = false;
+var titleScene;
+var instructScene;
+var gameScene;
+var gameOverScene;
 
-var titleText = new PIXI.Text("Let's make friends!");
-var startText = new PIXI.Text("Click here to start!");
-var howToPlay = new PIXI.Text("How to play");
-var returnText = new PIXI.Text("Return");
+var menu;
 
-titleScene.addChild(startText);
-titleScene.addChild(howToPlay);
-titleScene.addChild(titleText);
+var titleText;
+var startText;
+var howToPlay;
 
-titleText.position.x = 100;
-titleText.position.y = 50;
-startText.position.x = 100;
-startText.position.y = 200;
-howToPlay.position.x = 100;
-howToPlay.position.y = 300;
+var instructText;
+var returnText;
 
-var instructText = new PIXI.Text("Use your arrow keys or WASD to move Bill around to meet new friends!",{fontFamily : 'Arial', fontSize: 11, fill : 0xff1010, align : 'center'});
-instructScene.addChild(instructText);
-instructScene.addChild(returnText);
-instructText.position.x = 0;
-instructText.position.y = 0;
-returnText.position.x = 100;
-returnText.position.y = 100;
+var gameOverText;
 
-function dispGame(e)
-{
-  titleScene.visible = false;
-  instructScene.visible = false;
-  gameScene.visible = true;
-  gameOverScene.visible = false;
-}
-
-function dispInstruct(e)
-{
-  instructScene.visible = true;
-  titleScene.visible = false;
-}
-
-function dispTitle()
-{
-  titleScene.visible = true;
-  instructScene.visible = false;
-  gameScene = false;
-}
-
-startText.interactive = true;
-howToPlay.interactive = true;
-returnText.interactive = true;
-startText.on('mousedown', dispGame);
-howToPlay.on('mousedown', dispInstruct);
-returnText.on('mousedown', dispGame);
-
-var gameOverText = new PIXI.Text("You win!");
-gameOverScene.addChild(gameOverText);
-gameOverText.position.x = 100;
-gameOverText.position.y = 50;
-
-
-var background = new PIXI.Sprite(PIXI.Texture.fromImage("background.png"));
-background.position.x = 0;
-background.position.y = 0;
-gameScene.addChild(background);
-
+/*
 var text = new PIXI.Text('Text',{fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'});
 gameScene.addChild(text);
 text.position.x = 23;
 text.position.y = 34;
+*/
 
 var starText = [
     "Oh, I'm sorry - I'm too cool to hang out with you.",
@@ -98,22 +41,23 @@ var squareText = [
 var circleText = "...";
 var speech = "";
 
-var starCount = 0;
-var squareCount = 0;
-var circleCount = 0;
-
 var starLimit = 2;
 var squareLimit = 4;
 var circleLimit = 10;
 
-var starFriend = false;
-var squareFriend = false;
-var circleFriend = false;
+var starCount;
+var squareCount;
+var circleCount;
+
+var starFriende;
+var squareFriend;
+var circleFriend;
 
 var star;
 var square;
 var circle;
 var bill;
+var background
 
 PIXI.loader
   .add("assets.json")
@@ -121,6 +65,64 @@ PIXI.loader
 
 function ready()
 {
+  titleScene = new PIXI.Container();
+  instructScene = new PIXI.Container();
+  gameScene = new PIXI.Container();
+  gameOverScene = new PIXI.Container();
+  menu = new PIXI.Container();
+
+  stage.addChild(titleScene);
+  stage.addChild(instructScene);
+  stage.addChild(gameScene);
+  stage.addChild(gameOverScene);
+
+  gameScene.visible = false;
+  instructScene.visible = false;
+  gameOverScene.visible = false;
+
+  menu.visible = false;
+
+  titleText = new PIXI.Text("Let's make friends!");
+  startText = new PIXI.Text("Click here to start!");
+  howToPlay = new PIXI.Text("How to play");
+
+  titleScene.addChild(startText);
+  titleScene.addChild(howToPlay);
+  titleScene.addChild(titleText);
+
+  titleText.position.x = 100;
+  titleText.position.y = 50;
+  startText.position.x = 100;
+  startText.position.y = 200;
+  howToPlay.position.x = 100;
+  howToPlay.position.y = 300;
+
+  startText.interactive = true;
+  howToPlay.interactive = true;
+
+  startText.buttonMode = true;
+  howToPlay.buttonMode = true;
+
+  startText.on('mousedown', dispGame);
+  howToPlay.on('mousedown', dispInstruct);
+
+  instructText = new PIXI.Text("Use your arrow keys or WASD to move Bill around to meet new friends!",{fontFamily : 'Arial', fontSize: 11, fill : 0xff1010, align : 'center'});
+  returnText = new PIXI.Text("Return to title screen");
+  returnText.interactive = true;
+  returnText.buttonMode = true;
+  returnText.on('mousedown', dispTitle);
+  instructScene.addChild(instructText);
+  instructScene.addChild(returnText);
+  instructText.position.x = 0;
+  instructText.position.y = 0;
+  returnText.position.x = 100;
+  returnText.position.y = 100;
+
+  background = new PIXI.Sprite(PIXI.Texture.fromImage("background.png"));
+  background.position.x = 0;
+  background.position.y = 0;
+  gameScene.addChild(background);
+
   star = new PIXI.Sprite(PIXI.Texture.fromFrame("star1.png")); //3
   square = new PIXI.Sprite(PIXI.Texture.fromFrame("square1.png"));  //5
   circle = new PIXI.Sprite(PIXI.Texture.fromFrame("circle1.png")); //7
@@ -141,9 +143,23 @@ function ready()
   gameScene.addChild(square);
   square.position.x = 180;
   square.position.y = 90;
+
+  starFriend = false;
+  squareFriend = false;
+  circleFriend = false;
+
+  starLimit = 2;
+  squareLimit = 4;
+  circleLimit = 10;
+
+  gameOverText = new PIXI.Text("You win!");
+  gameOverScene.addChild(gameOverText);
+  gameOverText.position.x = 100;
+  gameOverText.position.y = 50;
 }
 
-window.addEventListener("keydown", function(e) {
+window.addEventListener("keydown", function(e)
+{
     // space and arrow keys
     if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
         e.preventDefault();
@@ -326,6 +342,36 @@ function animate()
   renderer.render(stage);
 }
 animate();
+
+function dispGame(e)
+{
+  titleScene.visible = false;
+  instructScene.visible = false;
+  gameScene.visible = true;
+  gameOverScene.visible = false;
+}
+
+function dispInstruct(e)
+{
+  instructScene.visible = true;
+  titleScene.visible = false;
+}
+
+function dispTitle()
+{
+  titleScene.visible = true;
+  instructScene.visible = false;
+  gameScene.visible = false;
+  menuScene.visible = false;
+}
+
+function dispMenu()
+{
+  titleScene.visible = false;
+  instructScene.visible = false;
+  gameScene.visible = false;
+  menuScene.visible = true;
+}
 
 function dispGameOver()
 {
