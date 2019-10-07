@@ -4,15 +4,77 @@ var renderer = PIXI.autoDetectRenderer(400, 400, {backgroundColor: 0xe6b5eb});
 gameport.appendChild(renderer.view);
 
 var stage = new PIXI.Container();
-var start = new PIXI.Container();
+var titleScene = new PIXI.Container();
+var instructScene = new PIXI.Container();
+var gameScene = new PIXI.Container();
+var gameOverScene = new PIXI.Container();
+
+stage.addChild(titleScene);
+stage.addChild(instructScene);
+stage.addChild(gameScene);
+stage.addChild(gameOverScene);
+gameScene.visible = false;
+instructScene.visible = false;
+gameOverScene.visible = false;
+
+//var button = new PIXI.Sprite(PIXI.Texture.fromImage("hero.png"));
+var titleText = new PIXI.Text("Let's make friends!");
+var startText = new PIXI.Text("Click here to start!");
+var howToPlay = new PIXI.Text("How to play");
+var returnText = new PIXI.Text("Return");
+
+titleScene.addChild(startText);
+titleScene.addChild(howToPlay);
+titleScene.addChild(titleText);
+
+titleText.position.x = 100;
+titleText.position.y = 50;
+startText.position.x = 100;
+startText.position.y = 200;
+howToPlay.position.x = 100;
+howToPlay.position.y = 300;
+
+var instructText = new PIXI.Text("Use your arrow keys or WASD to move Bill around to meet new friends!",{fontFamily : 'Arial', fontSize: 11, fill : 0xff1010, align : 'center'});
+instructScene.addChild(instructText);
+instructScene.addChild(returnText);
+instructText.position.x = 0;
+instructText.position.y = 0;
+returnText.position.x = 100;
+returnText.position.y = 100;
+
+function dispGame(e)
+{
+  titleScene.visible = false;
+  instructScene.visible = false;
+  gameScene.visible = true;
+}
+
+function dispInstruct(e)
+{
+  instructScene.visible = true;
+  titleScene.visible = false;
+}
+
+startText.interactive = true;
+howToPlay.interactive = true;
+returnText.interactive = true;
+startText.on('mousedown', dispGame);
+howToPlay.on('mousedown', dispInstruct);
+returnText.on('mousedown', dispGame);
+
+var gameOverText = new PIXI.Text("You win!");
+gameOverScene.addChild(gameOverText);
+gameOverText.position.x = 100;
+gameOverText.position.y = 50;
+
 
 var background = new PIXI.Sprite(PIXI.Texture.fromImage("background.png"));
 background.position.x = 0;
 background.position.y = 0;
+gameScene.addChild(background);
 
-stage.addChild(background);
-var text = new PIXI.Text('',{fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'});
-stage.addChild(text);
+var text = new PIXI.Text('Text',{fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'});
+gameScene.addChild(text);
 text.position.x = 23;
 text.position.y = 34;
 
@@ -57,22 +119,29 @@ function ready()
   circle = new PIXI.Sprite(PIXI.Texture.fromFrame("circle1.png")); //7
   bill = new PIXI.Sprite(PIXI.Texture.fromFrame("bill1.png"));  //1
 
-  stage.addChild(bill);
+  gameScene.addChild(bill);
   bill.position.x = 200;
   bill.position.y = 200;
 
-  stage.addChild(star);
+  gameScene.addChild(star);
   star.position.x = 295;
   star.position.y = 295;
 
-  stage.addChild(circle);
+  gameScene.addChild(circle);
   circle.position.x = 45;
   circle.position.y = 270;
 
-  stage.addChild(square);
+  gameScene.addChild(square);
   square.position.x = 180;
   square.position.y = 90;
 }
+
+window.addEventListener("keydown", function(e) {
+    // space and arrow keys
+    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+    }
+}, false);
 
 function keydownEventHandler(e)
 {
@@ -142,7 +211,7 @@ function animate()
 
   //document.getElementById("billpos").innerHTML = "Bill position: " + bill.position.x + ", " + bill.position.y;
 
-  var buffer = 25;
+  var buffer = 50;
 
   if (bill.position.x >= square.position.x - buffer &&
     bill.position.x <= square.position.x + buffer &&
@@ -241,6 +310,7 @@ function animate()
   {
     document.getElementById("winmessage").innerHTML =
       "Congrats! Now you have friends."
+    end();
   }
 
   document.getElementById("speechtext").innerHTML = speech;
@@ -249,3 +319,10 @@ function animate()
   renderer.render(stage);
 }
 animate();
+
+function end()
+{
+  gameScene.visible = false;
+  gameOverScene.visible = true;
+  gameOverScene.addChild(bill);
+}
