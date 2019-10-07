@@ -10,7 +10,13 @@ var instructScene;
 var gameScene;
 var gameOverScene;
 
-var menu;
+var menuScene;
+
+var menuText;
+
+var resetText;
+var quitText;
+var cancelText;
 
 var titleText;
 var startText;
@@ -20,13 +26,6 @@ var instructText;
 var returnText;
 
 var gameOverText;
-
-/*
-var text = new PIXI.Text('Text',{fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'});
-gameScene.addChild(text);
-text.position.x = 23;
-text.position.y = 34;
-*/
 
 var starText = [
     "Oh, I'm sorry - I'm too cool to hang out with you.",
@@ -49,7 +48,7 @@ var starCount;
 var squareCount;
 var circleCount;
 
-var starFriende;
+var starFriend;
 var squareFriend;
 var circleFriend;
 
@@ -61,15 +60,15 @@ var background
 
 PIXI.loader
   .add("assets.json")
-  .load(ready);
+  .load(setup);
 
-function ready()
+function setup()
 {
   titleScene = new PIXI.Container();
   instructScene = new PIXI.Container();
   gameScene = new PIXI.Container();
   gameOverScene = new PIXI.Container();
-  menu = new PIXI.Container();
+  menuScene = new PIXI.Container();
 
   stage.addChild(titleScene);
   stage.addChild(instructScene);
@@ -80,159 +79,22 @@ function ready()
   instructScene.visible = false;
   gameOverScene.visible = false;
 
-  menu.visible = false;
+  menuScene.visible = false;
 
-  titleText = new PIXI.Text("Let's make friends!");
-  startText = new PIXI.Text("Click here to start!");
-  howToPlay = new PIXI.Text("How to play");
+  setupTitle();
 
-  titleScene.addChild(startText);
-  titleScene.addChild(howToPlay);
-  titleScene.addChild(titleText);
+  setupInstruct();
 
-  titleText.position.x = 100;
-  titleText.position.y = 50;
-  startText.position.x = 100;
-  startText.position.y = 200;
-  howToPlay.position.x = 100;
-  howToPlay.position.y = 300;
+  setupGame();
 
-  startText.interactive = true;
-  howToPlay.interactive = true;
+  setupMenu();
 
-  startText.buttonMode = true;
-  howToPlay.buttonMode = true;
-
-  startText.on('mousedown', dispGame);
-  howToPlay.on('mousedown', dispInstruct);
-
-  instructText = new PIXI.Text("Use your arrow keys or WASD to move Bill around to meet new friends!",{fontFamily : 'Arial', fontSize: 11, fill : 0xff1010, align : 'center'});
-  returnText = new PIXI.Text("Return to title screen");
-  returnText.interactive = true;
-  returnText.buttonMode = true;
-  returnText.on('mousedown', dispTitle);
-  instructScene.addChild(instructText);
-  instructScene.addChild(returnText);
-  instructText.position.x = 0;
-  instructText.position.y = 0;
-  returnText.position.x = 100;
-  returnText.position.y = 100;
-
-  background = new PIXI.Sprite(PIXI.Texture.fromImage("background.png"));
-  background.position.x = 0;
-  background.position.y = 0;
-  gameScene.addChild(background);
-
-  star = new PIXI.Sprite(PIXI.Texture.fromFrame("star1.png")); //3
-  square = new PIXI.Sprite(PIXI.Texture.fromFrame("square1.png"));  //5
-  circle = new PIXI.Sprite(PIXI.Texture.fromFrame("circle1.png")); //7
-  bill = new PIXI.Sprite(PIXI.Texture.fromFrame("bill1.png"));  //1
-
-  gameScene.addChild(bill);
-  bill.position.x = 200;
-  bill.position.y = 200;
-
-  gameScene.addChild(star);
-  star.position.x = 295;
-  star.position.y = 295;
-
-  gameScene.addChild(circle);
-  circle.position.x = 45;
-  circle.position.y = 270;
-
-  gameScene.addChild(square);
-  square.position.x = 180;
-  square.position.y = 90;
-
-  starFriend = false;
-  squareFriend = false;
-  circleFriend = false;
-
-  starLimit = 2;
-  squareLimit = 4;
-  circleLimit = 10;
-
-  gameOverText = new PIXI.Text("You win!");
-  gameOverScene.addChild(gameOverText);
-  gameOverText.position.x = 100;
-  gameOverText.position.y = 50;
+  setupGameOver();
 }
-
-window.addEventListener("keydown", function(e)
-{
-    // space and arrow keys
-    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-        e.preventDefault();
-    }
-}, false);
-
-function keydownEventHandler(e)
-{
-  var key = e.keyCode;
-  var duration = 150;
-  var boundary = 50;
-  var leaveText = "You're not allowed to leave.";
-  var billX;
-  var billY;
-
-  if (key == 87 || key == 38)
-  { // W key
-    if (bill.position.y - boundary > 0)
-    {
-      billY = bill.position.y - boundary;
-    }
-    else
-    {
-      speech = leaveText;
-    }
-  }
-
-  if (key == 83 || key == 40)
-  { // S key
-    if (bill.position.y + boundary < 380)
-    {
-      billY = bill.position.y + boundary;
-    }
-    else
-    {
-      speech = leaveText;
-    }
-  }
-
-  if (key == 65 || key == 37)
-  { // A key
-    if (bill.position.x - boundary > 0)
-    {
-      billX = bill.position.x - boundary;
-    }
-    else
-    {
-      speech = leaveText;
-    }
-  }
-
-  if (key == 68 || key == 39)
-   { // D key
-     if (bill.position.x + boundary < 380)
-     {
-       billX = bill.position.x + boundary;
-     }
-     else
-     {
-       speech = leaveText;
-     }
-  }
-
-  createjs.Tween.get(bill.position).to({x: billX, y: billY}, duration);
-}
-
-document.addEventListener('keydown', keydownEventHandler);
 
 function animate()
 {
   requestAnimationFrame(animate);
-
-  //document.getElementById("billpos").innerHTML = "Bill position: " + bill.position.x + ", " + bill.position.y;
 
   var buffer = 50;
 
@@ -343,6 +205,135 @@ function animate()
 }
 animate();
 
+
+
+
+
+
+
+function setupTitle()
+{
+  titleText = new PIXI.Text("Let's make friends!");
+  startText = new PIXI.Text("Click here to start!");
+  howToPlay = new PIXI.Text("How to play");
+
+  titleScene.addChild(startText);
+  titleScene.addChild(howToPlay);
+  titleScene.addChild(titleText);
+
+  titleText.position.x = 100;
+  titleText.position.y = 50;
+  startText.position.x = 100;
+  startText.position.y = 200;
+  howToPlay.position.x = 100;
+  howToPlay.position.y = 300;
+
+  startText.interactive = true;
+  howToPlay.interactive = true;
+
+  startText.buttonMode = true;
+  howToPlay.buttonMode = true;
+
+  startText.on('mousedown', dispGame);
+  howToPlay.on('mousedown', dispInstruct);
+}
+
+function setupInstruct()
+{
+  instructText = new PIXI.Text("Use your arrow keys or WASD to move Bill around to meet new friends!",{fontFamily : 'Arial', fontSize: 11, fill : 0xff1010, align : 'center'});
+  returnText = new PIXI.Text("Return to title screen");
+  returnText.interactive = true;
+  returnText.buttonMode = true;
+  returnText.on('mousedown', dispTitle);
+  instructScene.addChild(instructText);
+  instructScene.addChild(returnText);
+  instructText.position.x = 0;
+  instructText.position.y = 0;
+  returnText.position.x = 100;
+  returnText.position.y = 100;
+}
+
+function setupGame()
+{
+  background = new PIXI.Sprite(PIXI.Texture.fromImage("background.png"));
+  background.position.x = 0;
+  background.position.y = 0;
+  gameScene.addChild(background);
+
+  star = new PIXI.Sprite(PIXI.Texture.fromFrame("star1.png")); //3
+  square = new PIXI.Sprite(PIXI.Texture.fromFrame("square1.png"));  //5
+  circle = new PIXI.Sprite(PIXI.Texture.fromFrame("circle1.png")); //7
+  bill = new PIXI.Sprite(PIXI.Texture.fromFrame("bill1.png"));  //1
+
+  menuText = new PIXI.Text("Menu");
+  menuText.interactive = true;
+  menuText.buttonMode = true;
+  gameScene.addChild(menuText);
+  menuText.on('mousedown', dispMenu);
+
+  gameScene.addChild(bill);
+  bill.position.x = 200;
+  bill.position.y = 200;
+
+  gameScene.addChild(star);
+  star.position.x = 295;
+  star.position.y = 295;
+
+  gameScene.addChild(circle);
+  circle.position.x = 45;
+  circle.position.y = 270;
+
+  gameScene.addChild(square);
+  square.position.x = 180;
+  square.position.y = 90;
+
+  starFriend = false;
+  squareFriend = false;
+  circleFriend = false;
+
+  starCount = 0;
+  squareCount = 0;
+  circleCount = 0;
+
+  starLimit = 2;
+  squareLimit = 4;
+  circleLimit = 10;
+}
+
+function setupMenu()
+{
+  resetText = new PIXI.Text("Reset game");
+  quitText = new PIXI.Text("Quit to title screen");
+  cancelText = new PIXI.Text("Return to game");
+
+  menuScene.addChild(resetText);
+  menuScene.addChild(quitText);
+  menuScene.addChild(cancelText);
+
+  resetText.position.x = 100;
+  resetText.position.y = 50;
+  quitText.position.x = 100;
+  quitText.position.y = 100;
+  cancelText.position.x = 100;
+  cancelText.position.y = 150;
+}
+
+function setupGameOver()
+{
+  gameOverText = new PIXI.Text("You win!");
+  gameOverScene.addChild(gameOverText);
+  gameOverText.position.x = 100;
+  gameOverText.position.y = 50;
+
+  var playAgainText = new PIXI.Text("Play again?");
+  gameOverScene.addChild(playAgainText);
+  playAgainText.position.x = 100;
+  playAgainText.position.y = 100;
+  playAgainText.interactive = true;
+  playAgainText.on('mousedown', reset);
+}
+
+
 function dispGame(e)
 {
   titleScene.visible = false;
@@ -355,6 +346,8 @@ function dispInstruct(e)
 {
   instructScene.visible = true;
   titleScene.visible = false;
+  gameScene.visible = false;
+  menuScene.visible = false;
 }
 
 function dispTitle()
@@ -377,16 +370,11 @@ function dispGameOver()
 {
   gameScene.visible = false;
   gameOverScene.visible = true;
+
   gameOverScene.addChild(bill);
   gameOverScene.addChild(star);
   gameOverScene.addChild(square);
   gameOverScene.addChild(circle);
-  var playAgainText = new PIXI.Text("Play again?");
-  gameOverScene.addChild(playAgainText);
-  playAgainText.position.x = 100;
-  playAgainText.position.y = 100;
-  playAgainText.interactive = true;
-  playAgainText.on('mousedown', reset);
 }
 function reset()
 {
@@ -416,3 +404,73 @@ function reset()
 
   dispGame();
 }
+
+window.addEventListener("keydown", function(e)
+{
+    // space and arrow keys
+    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+        e.preventDefault();
+    }
+}, false);
+
+function keydownEventHandler(e)
+{
+  var key = e.keyCode;
+  var duration = 150;
+  var boundary = 50;
+  var leaveText = "You're not allowed to leave.";
+  var billX;
+  var billY;
+
+  if (key == 87 || key == 38)
+  { // W key
+    if (bill.position.y - boundary > 0)
+    {
+      billY = bill.position.y - boundary;
+    }
+    else
+    {
+      speech = leaveText;
+    }
+  }
+
+  if (key == 83 || key == 40)
+  { // S key
+    if (bill.position.y + boundary < 380)
+    {
+      billY = bill.position.y + boundary;
+    }
+    else
+    {
+      speech = leaveText;
+    }
+  }
+
+  if (key == 65 || key == 37)
+  { // A key
+    if (bill.position.x - boundary > 0)
+    {
+      billX = bill.position.x - boundary;
+    }
+    else
+    {
+      speech = leaveText;
+    }
+  }
+
+  if (key == 68 || key == 39)
+   { // D key
+     if (bill.position.x + boundary < 380)
+     {
+       billX = bill.position.x + boundary;
+     }
+     else
+     {
+       speech = leaveText;
+     }
+  }
+
+  createjs.Tween.get(bill.position).to({x: billX, y: billY}, duration);
+}
+
+document.addEventListener('keydown', keydownEventHandler);
