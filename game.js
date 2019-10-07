@@ -11,42 +11,6 @@ background.position.y = 0;
 
 stage.addChild(background);
 
-PIXI.loader
-  .add("assets.json")
-  .load(ready);
-
-var frames = [];
-
-var starTexture;
-var squareTexture;
-var circleTexture;
-var billTexture;
-
-var star; //3
-var square; //5
-var circle; //7
-var bill; //1
-
-function ready()
-{
-  starTexture = "bill_and_friends3.png";
-  squareTexture = "bill_and_friends5.png";
-  circleTexture = "bill_and_friends7.png";
-  billTexture = "bill_and_friends1.png";
-
-  star = new PIXI.Sprite(PIXI.Texture.fromFrame(starTexture));
-  square = new PIXI.Sprite(PIXI.Texture.fromFrame(squareTexture));
-  circle = new PIXI.Sprite(PIXI.Texture.fromFrame(circleTexture));
-  bill = new PIXI.Sprite(PIXI.Texture.fromFrame(billTexture));
-}
-
-/*
-var star = new PIXI.Sprite(PIXI.Texture.fromFrame(starTexture)); //3
-var square = new PIXI.Sprite(PIXI.Texture.fromFrame(squareTexture)); //5
-var circle = new PIXI.Sprite(PIXI.Texture.fromFrame(circleTexture)); //7
-var bill = new PIXI.Sprite(PIXI.Texture.fromFrame(billTexture)); //1
-*/
-
 var starText = [
     "Oh, I'm sorry - I'm too cool to hang out with you.",
     "Dude, like for real.",
@@ -72,21 +36,38 @@ var starFriend = false;
 var squareFriend = false;
 var circleFriend = false;
 
-stage.addChild(bill);
-bill.position.x = 200;
-bill.position.y = 200;
+var star;
+var square;
+var circle;
+var bill;
 
-stage.addChild(star);
-star.position.x = 295;
-star.position.y = 295;
+PIXI.loader
+  .add("assets.json")
+  .load(ready);
 
-stage.addChild(circle);
-circle.position.x = 45;
-circle.position.y = 270;
+function ready()
+{
+  star = new PIXI.Sprite(PIXI.Texture.fromFrame("star1.png")); //3
+  square = new PIXI.Sprite(PIXI.Texture.fromFrame("square1.png"));  //5
+  circle = new PIXI.Sprite(PIXI.Texture.fromFrame("circle1.png")); //7
+  bill = new PIXI.Sprite(PIXI.Texture.fromFrame("bill1.png"));  //1
 
-stage.addChild(square);
-square.position.x = 180;
-square.position.y = 90;
+  stage.addChild(bill);
+  bill.position.x = 200;
+  bill.position.y = 200;
+
+  stage.addChild(star);
+  star.position.x = 295;
+  star.position.y = 295;
+
+  stage.addChild(circle);
+  circle.position.x = 45;
+  circle.position.y = 270;
+
+  stage.addChild(square);
+  square.position.x = 180;
+  square.position.y = 90;
+}
 
 function keydownEventHandler(e)
 {
