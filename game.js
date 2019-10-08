@@ -127,6 +127,7 @@ function setup()
   setupCredits();
 }
 
+//makes sure using arrow keys doesn't scroll page
 window.addEventListener("keydown", function(e)
 {
     // space and arrow keys
@@ -136,15 +137,22 @@ window.addEventListener("keydown", function(e)
     }
 }, false);
 
+//moves around playable character (Bill)
 function keydownEventHandler(e)
 {
-  var key = e.keyCode;
-  var duration = 150;
-  var boundary = 50;
+  var key = e.keyCode; //get key code
+
+  var duration = 150; //define duration of tweening
+  var boundary = 50; //outer boundary of game
+
+  //text when player tries to leave game boundaries
   var leaveText = "You're not allowed to leave.";
+
+  //playable character position
   var billX;
   var billY;
 
+  //playable character only moves within boundaries
   if (key == 87 || key == 38)
   { // W key
     if (bill.position.y - boundary > 0)
@@ -193,44 +201,46 @@ function keydownEventHandler(e)
      }
   }
 
+  //moves character using tweening
   createjs.Tween.get(bill.position).to({x: billX, y: billY}, duration);
-  billNoise.play();
+  billNoise.play(); //plays character sound effect
 }
-
 document.addEventListener('keydown', keydownEventHandler);
 
-
+//define game logic
 function animate()
 {
   requestAnimationFrame(animate);
 
-  var buffer = 50;
+  var buffer = 50; //collision area of NPCs
 
+  //checks if Bill is near any NPC
   if (bill.position.x >= square.position.x - buffer &&
     bill.position.x <= square.position.x + buffer &&
     bill.position.y >= square.position.y - buffer &&
     bill.position.y <= square.position.y + buffer &&
     !squareFriend)
   {
-    if (circleFriend)
+    if (circleFriend) //automatically friends if already Circle's friend
     {
-      squareFriend = true;
+      squareFriend = true; //becomes friends with Square
       speech = "Square: Woah! You're friends with Circle? They have, like, "
         + "infinite corners.";
     }
-    else if (squareCount < squareLimit)
+    else if (squareCount < squareLimit) //not friends yet
     {
+      //Square runs away to random position
       square.position.x = Math.floor(Math.random() * 300) + 50;
       square.position.y = Math.floor(Math.random() * 300) + 50;
 
-      squareNoise.play();
+      squareNoise.play(); //play character sound effect
 
-      speech = "Square: " + squareText[squareCount];
-      squareCount += 1;
+      speech = "Square: " + squareText[squareCount]; //set NPC speech
+      squareCount += 1; //closer to becoming friends with Square
     }
     else
     {
-      squareFriend = true;
+      squareFriend = true; //becomes friends with Square
       speech = "Square: Actually, 3 corners are the new fashion. Let's be friends.";
     }
   }
@@ -240,24 +250,25 @@ function animate()
     bill.position.y <= star.position.y + buffer &&
     !starFriend)
   {
-    if (circleFriend)
+    if (circleFriend) //automatically friends if already Circle's friend
     {
       starFriend = true;
       speech = "Man, Circle is the coolest guy around. Maybe you are alright."
     }
-    else if (starCount < starLimit)
+    else if (starCount < starLimit) //not friends yet
     {
+      //Star runs away to random position
       star.position.x = Math.floor(Math.random() * 300) + 50;
       star.position.y = Math.floor(Math.random() * 300) + 50;
 
-      starNoise.play();
+      starNoise.play(); //play character sound effect
 
-      speech = "Star: " + starText[starCount];
-      starCount += 1;
+      speech = "Star: " + starText[starCount]; //set NPC speech
+      starCount += 1; //closer to becoming friends with Star
     }
     else
     {
-      starFriend = true;
+      starFriend = true; //becomes friends with Star
       speech = "Star: Who am I kidding? I don't have any friends either.";
     }
   }
@@ -269,44 +280,51 @@ function animate()
   {
     if (squareFriend && starFriend)
     {
+      //automatically friends if already friends with other 2
       circleFriend = true;
       speech = "Circle: Your friends seem alright.";
     }
     else if (circleCount < circleLimit)
     {
+      //Circle runs away to random position
       circle.position.x = Math.floor(Math.random() * 300) + 50;
       circle.position.y = Math.floor(Math.random() * 300) + 50;
 
-      circleNoise.play();
+      circleNoise.play(); //plays NPC sounds effect
 
-      speech = "Circle: " + circleText;
-      circleCount += 1;
+      speech = "Circle: " + circleText; //set NPC speech
+      circleCount += 1; //closer to becoming friends
     }
     else
     {
-      circleFriend = true;
+      circleFriend = true; //become friends with Circle
       speech = "Circle: Fine.";
     }
   }
 
-  if (squareFriend)
+  if (squareFriend) //Square follows Bill around
   {
     square.position.x = bill.position.x + 30;
     square.position.y = bill.position.y - 30;
+
+    //Square texture turns to happy face
     square.setTexture(PIXI.Texture.fromFrame("square2.png"));
   }
-  if (starFriend)
+  if (starFriend) //Star follows Bill around
   {
     star.position.x = bill.position.x - 30;
     star.position.y = bill.position.y - 30;
+
+    //Star texture turns to happy face
     star.setTexture(PIXI.Texture.fromFrame("star2.png"));
   }
-  if (circleFriend)
+  if (circleFriend) //Circle follows Bill around
   {
     circle.position.x = bill.position.x;
     circle.position.y = bill.position.y + 50;
   }
 
+  //game is over when Bill collects all friends
   if (squareFriend && starFriend && circleFriend)
   {
     document.getElementById("winmessage").innerHTML =
@@ -314,6 +332,7 @@ function animate()
     dispGameOver();
   }
 
+  //displays NPC speech
   document.getElementById("speechtext").innerHTML = speech;
   text = speech;
 
@@ -367,12 +386,18 @@ function setupTitle()
 
 function setupInstruct()
 {
+  //set instructions text
   instructText = new PIXI.Text("Use your arrow keys or WASD \n to move Bill around" +
     " to meet \nnew friends!",{align : 'center'});
+  //set return to title text
   returnText = new PIXI.Text("Return to title screen");
+
+  //turn return text into a button
   returnText.interactive = true;
   returnText.buttonMode = true;
   returnText.on('mousedown', dispTitle);
+
+  //add elements to scene graph
   instructScene.addChild(instructText);
   instructScene.addChild(returnText);
   instructText.position.x = 0;
@@ -383,46 +408,48 @@ function setupInstruct()
 
 function setupGame()
 {
+  //set up game background
   background = new PIXI.Sprite(PIXI.Texture.fromImage("background.png"));
   background.position.x = 0;
   background.position.y = 0;
   gameScene.addChild(background);
 
+  //make new sprites
   star = new PIXI.Sprite(PIXI.Texture.fromFrame("star1.png")); //3
   square = new PIXI.Sprite(PIXI.Texture.fromFrame("square1.png"));  //5
   circle = new PIXI.Sprite(PIXI.Texture.fromFrame("circle1.png")); //7
   bill = new PIXI.Sprite(PIXI.Texture.fromFrame("bill1.png"));  //1
 
+  //add button to menu
   menuText = new PIXI.Text("Menu");
   menuText.interactive = true;
   menuText.buttonMode = true;
   gameScene.addChild(menuText);
   menuText.on('mousedown', dispMenu);
 
+  //add each sprite to scene graph
   gameScene.addChild(bill);
   bill.position.x = 200;
   bill.position.y = 200;
-
   gameScene.addChild(star);
   star.position.x = 295;
   star.position.y = 295;
-
   gameScene.addChild(circle);
   circle.position.x = 45;
   circle.position.y = 270;
-
   gameScene.addChild(square);
   square.position.x = 180;
   square.position.y = 90;
 
+  //Bill is not friends with any of the NPCs yet
   starFriend = false;
   squareFriend = false;
   circleFriend = false;
 
+  //set up counters and limits for friends
   starCount = 0;
   squareCount = 0;
   circleCount = 0;
-
   starLimit = 2;
   squareLimit = 4;
   circleLimit = 10;
@@ -430,14 +457,15 @@ function setupGame()
 
 function setupMenu()
 {
+  //create text for menu
   resetText = new PIXI.Text("Reset game");
   quitText = new PIXI.Text("Quit to title screen");
   cancelText = new PIXI.Text("Return to game");
 
+  //add text to menu
   menuScene.addChild(resetText);
   menuScene.addChild(quitText);
   menuScene.addChild(cancelText);
-
   resetText.position.x = 100;
   resetText.position.y = 50;
   quitText.position.x = 100;
@@ -445,13 +473,13 @@ function setupMenu()
   cancelText.position.x = 100;
   cancelText.position.y = 150;
 
+  //turn text into buttons
   resetText.interactive = true;
   quitText.interactive = true;
   cancelText.interactive = true;
   resetText.buttonMode = true;
   quitText.buttonMode = true;
   cancelText.buttonMode = true;
-
   resetText.on('mousedown', reset);
   quitText.on('mousedown', dispTitle);
   cancelText.on('mousedown', dispGame);
@@ -459,11 +487,13 @@ function setupMenu()
 
 function setupGameOver()
 {
+  //create and add text to game over scene
   gameOverText = new PIXI.Text("You win!");
   gameOverScene.addChild(gameOverText);
   gameOverText.position.x = 100;
   gameOverText.position.y = 50;
 
+  //create and add play again button to game over screen
   var playAgainText = new PIXI.Text("Play again?");
   gameOverScene.addChild(playAgainText);
   playAgainText.position.x = 100;
@@ -475,26 +505,26 @@ function setupGameOver()
 
 function setupCredits()
 {
+  //create and add text to credits scene
   var creditText = new PIXI.Text("Game by: Elie Carlos");
   var exitText = new PIXI.Text("Exit");
-
   creditScene.addChild(creditText);
   creditScene.addChild(exitText);
-
   creditText.position.x = 100;
   creditText.position.y = 100;
   exitText.position.x = 100;
   exitText.position.y = 300;
 
+  //turn exit text into button
   exitText.interactive = true;
   exitText.buttonMode = true;
-
   exitText.on('mousedown', dispTitle);
 }
 
 
 function dispGame(e)
 {
+  //only display game scene
   selectNoise.play();
   titleScene.visible = false;
   instructScene.visible = false;
@@ -505,6 +535,7 @@ function dispGame(e)
 
 function dispInstruct(e)
 {
+  //only display instructions scene
   selectNoise.play();
   instructScene.visible = true;
   titleScene.visible = false;
@@ -514,6 +545,7 @@ function dispInstruct(e)
 
 function dispTitle()
 {
+  //only display title screen
   selectNoise.play();
   titleScene.visible = true;
   instructScene.visible = false;
@@ -524,6 +556,7 @@ function dispTitle()
 
 function dispMenu()
 {
+  //only display menu scene
   selectNoise.play();
   titleScene.visible = false;
   instructScene.visible = false;
@@ -533,9 +566,11 @@ function dispMenu()
 
 function dispGameOver()
 {
+  //only display game over scene
   gameScene.visible = false;
   gameOverScene.visible = true;
 
+  //add sprites to game over scene
   gameOverScene.addChild(bill);
   gameOverScene.addChild(star);
   gameOverScene.addChild(square);
@@ -544,6 +579,7 @@ function dispGameOver()
 
 function dispCredits()
 {
+  //only display credits scene
   selectNoise.play();
   creditScene.visible = true;
   titleScene.visible = false;
@@ -552,39 +588,40 @@ function dispCredits()
 
 function reset()
 {
+  //add sprites back to game scene and reset positions
   selectNoise.play();
   gameScene.addChild(bill);
   bill.position.x = 200;
   bill.position.y = 200;
-
   gameScene.addChild(star);
   star.position.x = 295;
   star.position.y = 295;
-
   gameScene.addChild(circle);
   circle.position.x = 45;
   circle.position.y = 270;
-
   gameScene.addChild(square);
   square.position.x = 180;
   square.position.y = 90;
 
+  //reset counters
   starCount = 0;
   squareCount = 0;
   circleCount = 0;
 
+  //characters are not friends anymore
   starFriend = false;
   squareFriend = false;
   circleFriend = false;
 
+  //reset to original textures
   square.setTexture(PIXI.Texture.fromFrame("square1.png"));
   star.setTexture(PIXI.Texture.fromFrame("star1.png"));
 
+  //reset NPC text
   document.getElementById("winmessage").innerHTML = null;
-
   document.getElementById("speechtext").innerHTML = null;
-
   speech = "";
 
+  //display game again
   dispGame();
 }
