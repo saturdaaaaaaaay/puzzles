@@ -10,6 +10,7 @@ var instructScene;
 var gameScene;
 var gameOverScene;
 var menuScene;
+var creditScene;
 
 var menuText; //declare variable for menu button in game scene
 
@@ -22,6 +23,7 @@ var cancelText;
 var titleText;
 var startText;
 var howToPlay;
+var credits;
 
 //declare varaibles for instructions page
 var instructText;
@@ -93,6 +95,7 @@ function setup()
   gameScene = new PIXI.Container();
   gameOverScene = new PIXI.Container();
   menuScene = new PIXI.Container();
+  creditScene = new PIXI.Container();
 
   //add scene graphs to stage
   stage.addChild(titleScene);
@@ -100,12 +103,14 @@ function setup()
   stage.addChild(gameScene);
   stage.addChild(gameOverScene);
   stage.addChild(menuScene);
+  stage.addChild(creditScene);
 
   //make all scene graphs but title screen invisible
   gameScene.visible = false;
   instructScene.visible = false;
   gameOverScene.visible = false;
   menuScene.visible = false;
+  creditScene.visible = false;
 
   billNoise = PIXI.audioManager.getAudio("bill.mp3");
   starNoise = PIXI.audioManager.getAudio("star.mp3");
@@ -119,6 +124,7 @@ function setup()
   setupGame();
   setupMenu();
   setupGameOver();
+  setupCredits();
 }
 
 window.addEventListener("keydown", function(e)
@@ -287,11 +293,13 @@ function animate()
   {
     square.position.x = bill.position.x + 30;
     square.position.y = bill.position.y - 30;
+    square.setTexture(PIXI.Texture.fromFrame("square2.png"));
   }
   if (starFriend)
   {
     star.position.x = bill.position.x - 30;
     star.position.y = bill.position.y - 30;
+    star.setTexture(PIXI.Texture.fromFrame("star2.png"));
   }
   if (circleFriend)
   {
@@ -325,36 +333,42 @@ function setupTitle()
   titleText = new PIXI.Text("Let's make friends!");
   startText = new PIXI.Text("Click here to start!");
   howToPlay = new PIXI.Text("How to play");
+  credits = new PIXI.Text("Credits");
 
   //add text to title scene graph
   titleScene.addChild(startText);
   titleScene.addChild(howToPlay);
   titleScene.addChild(titleText);
+  titleScene.addChild(credits);
 
   //position text and buttons on screen
   titleText.position.x = 100;
   titleText.position.y = 50;
   startText.position.x = 100;
-  startText.position.y = 200;
+  startText.position.y = 100;
   howToPlay.position.x = 100;
-  howToPlay.position.y = 300;
+  howToPlay.position.y = 150;
+  credits.position.x = 100;
+  credits.position.y = 200;
 
   //make buttons interactive
   startText.interactive = true;
   howToPlay.interactive = true;
+  credits.interactive = true;
   startText.buttonMode = true;
   howToPlay.buttonMode = true;
+  credits.buttonMode = true;
 
   //assign functions to each button
   startText.on('mousedown', dispGame);
   howToPlay.on('mousedown', dispInstruct);
+  credits.on('mousedown', dispCredits);
 }
 
 function setupInstruct()
 {
   instructText = new PIXI.Text("Use your arrow keys or WASD \n to move Bill around" +
-    " to meet \nnew friends!",{fontFamily : 'Arial', fontSize: 11, fill : 0xff1010,
-    align : 'center'});
+    " to meet \nnew friends!",{align : 'center'});
   returnText = new PIXI.Text("Return to title screen");
   returnText.interactive = true;
   returnText.buttonMode = true;
@@ -362,7 +376,7 @@ function setupInstruct()
   instructScene.addChild(instructText);
   instructScene.addChild(returnText);
   instructText.position.x = 0;
-  instructText.position.y = 0;
+  instructText.position.y = 50;
   returnText.position.x = 90;
   returnText.position.y = 200;
 }
@@ -459,9 +473,29 @@ function setupGameOver()
   playAgainText.on('mousedown', reset);
 }
 
+function setupCredits()
+{
+  var creditText = new PIXI.Text("Game by: Elie Carlos");
+  var exitText = new PIXI.Text("Exit");
+
+  creditScene.addChild(creditText);
+  creditScene.addChild(exitText);
+
+  creditText.position.x = 100;
+  creditText.position.y = 100;
+  exitText.position.x = 100;
+  exitText.position.y = 300;
+
+  exitText.interactive = true;
+  exitText.buttonMode = true;
+
+  exitText.on('mousedown', dispTitle);
+}
+
 
 function dispGame(e)
 {
+  selectNoise.play();
   titleScene.visible = false;
   instructScene.visible = false;
   gameScene.visible = true;
@@ -471,6 +505,7 @@ function dispGame(e)
 
 function dispInstruct(e)
 {
+  selectNoise.play();
   instructScene.visible = true;
   titleScene.visible = false;
   gameScene.visible = false;
@@ -479,14 +514,17 @@ function dispInstruct(e)
 
 function dispTitle()
 {
+  selectNoise.play();
   titleScene.visible = true;
   instructScene.visible = false;
   gameScene.visible = false;
   menuScene.visible = false;
+  creditScene.visible = false;
 }
 
 function dispMenu()
 {
+  selectNoise.play();
   titleScene.visible = false;
   instructScene.visible = false;
   gameScene.visible = false;
@@ -503,8 +541,18 @@ function dispGameOver()
   gameOverScene.addChild(square);
   gameOverScene.addChild(circle);
 }
+
+function dispCredits()
+{
+  selectNoise.play();
+  creditScene.visible = true;
+  titleScene.visible = false;
+}
+
+
 function reset()
 {
+  selectNoise.play();
   gameScene.addChild(bill);
   bill.position.x = 200;
   bill.position.y = 200;
@@ -528,6 +576,15 @@ function reset()
   starFriend = false;
   squareFriend = false;
   circleFriend = false;
+
+  square.setTexture(PIXI.Texture.fromFrame("square1.png"));
+  star.setTexture(PIXI.Texture.fromFrame("star1.png"));
+
+  document.getElementById("winmessage").innerHTML = null;
+
+  document.getElementById("speechtext").innerHTML = null;
+
+  speech = "";
 
   dispGame();
 }
