@@ -1,32 +1,36 @@
+//set up gameport, renderer, and stage
 var gameport = document.getElementById("gameport");
-
 var renderer = PIXI.autoDetectRenderer(400, 400, {backgroundColor: 0xe6b5eb});
 gameport.appendChild(renderer.view);
-
 var stage = new PIXI.Container();
 
+//declare variables for scene graphs
 var titleScene;
 var instructScene;
 var gameScene;
 var gameOverScene;
-
 var menuScene;
 
-var menuText;
+var menuText; //declare variable for menu button in game scene
 
+//declare variables for buttons in menu
 var resetText;
 var quitText;
 var cancelText;
 
+//declare variables for text in title screen
 var titleText;
 var startText;
 var howToPlay;
 
+//declare varaibles for instructions page
 var instructText;
 var returnText;
 
+//declare varaible for game over screen
 var gameOverText;
 
+//text for character speech
 var starText = [
     "Oh, I'm sorry - I'm too cool to hang out with you.",
     "Dude, like for real.",
@@ -40,57 +44,136 @@ var squareText = [
 var circleText = "...";
 var speech = "";
 
+//how many times Bill has to meet NPCs in order to make them friends
 var starLimit = 2;
 var squareLimit = 4;
 var circleLimit = 10;
 
+//keeps track of how many times Bill meets each NPC
 var starCount;
 var squareCount;
 var circleCount;
 
+//boolean - true if friends, false if not
 var starFriend;
 var squareFriend;
 var circleFriend;
 
+//declare variables for sprites
 var star;
 var square;
 var circle;
 var bill;
-var background
+var background;
 
+
+//load spritesheet
 PIXI.loader
   .add("assets.json")
   .load(setup);
 
+//set up game
 function setup()
 {
+  //create scene graphs
   titleScene = new PIXI.Container();
   instructScene = new PIXI.Container();
   gameScene = new PIXI.Container();
   gameOverScene = new PIXI.Container();
   menuScene = new PIXI.Container();
 
+  //add scene graphs to stage
   stage.addChild(titleScene);
   stage.addChild(instructScene);
   stage.addChild(gameScene);
   stage.addChild(gameOverScene);
+  stage.addChild(menuScene);
 
+  //make all scene graphs but title screen invisible
   gameScene.visible = false;
   instructScene.visible = false;
   gameOverScene.visible = false;
-
   menuScene.visible = false;
 
+  //set up appearance/function for each scene graph
   setupTitle();
-
   setupInstruct();
-
   setupGame();
-
   setupMenu();
-
   setupGameOver();
 }
+
+window.addEventListener("keydown", function(e)
+{
+    // space and arrow keys
+    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1)
+    {
+        e.preventDefault();
+    }
+}, false);
+
+function keydownEventHandler(e)
+{
+  var key = e.keyCode;
+  var duration = 150;
+  var boundary = 50;
+  var leaveText = "You're not allowed to leave.";
+  var billX;
+  var billY;
+
+  if (key == 87 || key == 38)
+  { // W key
+    if (bill.position.y - boundary > 0)
+    {
+      billY = bill.position.y - boundary;
+    }
+    else
+    {
+      speech = leaveText;
+    }
+  }
+
+  if (key == 83 || key == 40)
+  { // S key
+    if (bill.position.y + boundary < 380)
+    {
+      billY = bill.position.y + boundary;
+    }
+    else
+    {
+      speech = leaveText;
+    }
+  }
+
+  if (key == 65 || key == 37)
+  { // A key
+    if (bill.position.x - boundary > 0)
+    {
+      billX = bill.position.x - boundary;
+    }
+    else
+    {
+      speech = leaveText;
+    }
+  }
+
+  if (key == 68 || key == 39)
+   { // D key
+     if (bill.position.x + boundary < 380)
+     {
+       billX = bill.position.x + boundary;
+     }
+     else
+     {
+       speech = leaveText;
+     }
+  }
+
+  createjs.Tween.get(bill.position).to({x: billX, y: billY}, duration);
+}
+
+document.addEventListener('keydown', keydownEventHandler);
+
 
 function animate()
 {
@@ -213,14 +296,17 @@ animate();
 
 function setupTitle()
 {
+  //create text for title and buttons
   titleText = new PIXI.Text("Let's make friends!");
   startText = new PIXI.Text("Click here to start!");
   howToPlay = new PIXI.Text("How to play");
 
+  //add text to title scene graph
   titleScene.addChild(startText);
   titleScene.addChild(howToPlay);
   titleScene.addChild(titleText);
 
+  //position text and buttons on screen
   titleText.position.x = 100;
   titleText.position.y = 50;
   startText.position.x = 100;
@@ -228,19 +314,22 @@ function setupTitle()
   howToPlay.position.x = 100;
   howToPlay.position.y = 300;
 
+  //make buttons interactive
   startText.interactive = true;
   howToPlay.interactive = true;
-
   startText.buttonMode = true;
   howToPlay.buttonMode = true;
 
+  //assign functions to each button
   startText.on('mousedown', dispGame);
   howToPlay.on('mousedown', dispInstruct);
 }
 
 function setupInstruct()
 {
-  instructText = new PIXI.Text("Use your arrow keys or WASD to move Bill around to meet new friends!",{fontFamily : 'Arial', fontSize: 11, fill : 0xff1010, align : 'center'});
+  instructText = new PIXI.Text("Use your arrow keys or WASD \n to move Bill around" +
+    " to meet \nnew friends!",{fontFamily : 'Arial', fontSize: 11, fill : 0xff1010,
+    align : 'center'});
   returnText = new PIXI.Text("Return to title screen");
   returnText.interactive = true;
   returnText.buttonMode = true;
@@ -249,8 +338,8 @@ function setupInstruct()
   instructScene.addChild(returnText);
   instructText.position.x = 0;
   instructText.position.y = 0;
-  returnText.position.x = 100;
-  returnText.position.y = 100;
+  returnText.position.x = 90;
+  returnText.position.y = 200;
 }
 
 function setupGame()
@@ -316,6 +405,17 @@ function setupMenu()
   quitText.position.y = 100;
   cancelText.position.x = 100;
   cancelText.position.y = 150;
+
+  resetText.interactive = true;
+  quitText.interactive = true;
+  cancelText.interactive = true;
+  resetText.buttonMode = true;
+  quitText.buttonMode = true;
+  cancelText.buttonMode = true;
+
+  resetText.on('mousedown', reset);
+  quitText.on('mousedown', dispTitle);
+  cancelText.on('mousedown', dispGame);
 }
 
 function setupGameOver()
@@ -330,6 +430,7 @@ function setupGameOver()
   playAgainText.position.x = 100;
   playAgainText.position.y = 100;
   playAgainText.interactive = true;
+  playAgainText.buttonMode = true;
   playAgainText.on('mousedown', reset);
 }
 
@@ -340,6 +441,7 @@ function dispGame(e)
   instructScene.visible = false;
   gameScene.visible = true;
   gameOverScene.visible = false;
+  menuScene.visible = false;
 }
 
 function dispInstruct(e)
@@ -404,73 +506,3 @@ function reset()
 
   dispGame();
 }
-
-window.addEventListener("keydown", function(e)
-{
-    // space and arrow keys
-    if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-        e.preventDefault();
-    }
-}, false);
-
-function keydownEventHandler(e)
-{
-  var key = e.keyCode;
-  var duration = 150;
-  var boundary = 50;
-  var leaveText = "You're not allowed to leave.";
-  var billX;
-  var billY;
-
-  if (key == 87 || key == 38)
-  { // W key
-    if (bill.position.y - boundary > 0)
-    {
-      billY = bill.position.y - boundary;
-    }
-    else
-    {
-      speech = leaveText;
-    }
-  }
-
-  if (key == 83 || key == 40)
-  { // S key
-    if (bill.position.y + boundary < 380)
-    {
-      billY = bill.position.y + boundary;
-    }
-    else
-    {
-      speech = leaveText;
-    }
-  }
-
-  if (key == 65 || key == 37)
-  { // A key
-    if (bill.position.x - boundary > 0)
-    {
-      billX = bill.position.x - boundary;
-    }
-    else
-    {
-      speech = leaveText;
-    }
-  }
-
-  if (key == 68 || key == 39)
-   { // D key
-     if (bill.position.x + boundary < 380)
-     {
-       billX = bill.position.x + boundary;
-     }
-     else
-     {
-       speech = leaveText;
-     }
-  }
-
-  createjs.Tween.get(bill.position).to({x: billX, y: billY}, duration);
-}
-
-document.addEventListener('keydown', keydownEventHandler);
