@@ -330,7 +330,7 @@ animate();
 function setupTitle()
 {
   //create text for title and buttons
-  titleText = new PIXI.Text("Let's make friends!");
+  titleText = new PIXI.Text("Let's make some friends!");
   startText = new PIXI.Text("Click here to start!");
   howToPlay = new PIXI.Text("How to play");
   credits = new PIXI.Text("Credits");
@@ -342,13 +342,13 @@ function setupTitle()
   titleScene.addChild(credits);
 
   //position text and buttons on screen
-  titleText.position.x = 100;
+  titleText.position.x = 75;
   titleText.position.y = 50;
-  startText.position.x = 100;
+  startText.position.x = 75;
   startText.position.y = 100;
-  howToPlay.position.x = 100;
+  howToPlay.position.x = 75;
   howToPlay.position.y = 150;
-  credits.position.x = 100;
+  credits.position.x = 75;
   credits.position.y = 200;
 
   //make buttons interactive
