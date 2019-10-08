@@ -1,8 +1,16 @@
 {"frames": {
 
+"background.png":
+{
+	"frame": {"x":0,"y":64,"w":400,"h":400},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":400,"h":400},
+	"sourceSize": {"w":400,"h":400}
+},
 "bill1.png":
 {
-	"frame": {"x":0,"y":0,"w":64,"h":64},
+	"frame": {"x":256,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -10,7 +18,7 @@
 },
 "bill2.png":
 {
-	"frame": {"x":64,"y":0,"w":64,"h":64},
+	"frame": {"x":384,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -34,7 +42,7 @@
 },
 "square2.png":
 {
-	"frame": {"x":256,"y":0,"w":64,"h":64},
+	"frame": {"x":64,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -42,7 +50,7 @@
 },
 "star1.png":
 {
-	"frame": {"x":320,"y":0,"w":64,"h":64},
+	"frame": {"x":0,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -50,7 +58,7 @@
 },
 "star2.png":
 {
-	"frame": {"x":384,"y":0,"w":64,"h":64},
+	"frame": {"x":320,"y":0,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -61,8 +69,8 @@
 	"version": "1.0",
 	"image": "assets.png",
 	"format": "RGBA8888",
-	"size": {"w":448,"h":64},
+	"size": {"w":448,"h":464},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:4a088e332a023394eeb4cc5aea453e70:9c6483e2919d76a0fb3be054d3ac7d4e:a759b6bbc8381ac9c472b28f589ad0d6$"
+	"smartupdate": "$TexturePacker:SmartUpdate:b318dc9a3518d1e7f337fdd8f87af79a:41d708fb057755914439d4a2189ad273:a759b6bbc8381ac9c472b28f589ad0d6$"
 }
 }

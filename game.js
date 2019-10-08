@@ -66,10 +66,22 @@ var circle;
 var bill;
 var background;
 
+//declare variables for sound effects
+var billNoise;
+var starNoise;
+var squareNoise;
+var circleNoise;
+var selectNoise;
+
 
 //load spritesheet
 PIXI.loader
   .add("assets.json")
+  .add("bill.mp3")
+  .add("circle.mp3")
+  .add("square.mp3")
+  .add("star.mp3")
+  .add("select.mp3")
   .load(setup);
 
 //set up game
@@ -94,6 +106,12 @@ function setup()
   instructScene.visible = false;
   gameOverScene.visible = false;
   menuScene.visible = false;
+
+  billNoise = PIXI.audioManager.getAudio("bill.mp3");
+  starNoise = PIXI.audioManager.getAudio("star.mp3");
+  squareNoise = PIXI.audioManager.getAudio("square.mp3");
+  circleNoise = PIXI.audioManager.getAudio("circle.mp3");
+  selectNoise = PIXI.audioManager.getAudio("select.mp3");
 
   //set up appearance/function for each scene graph
   setupTitle();
@@ -170,6 +188,7 @@ function keydownEventHandler(e)
   }
 
   createjs.Tween.get(bill.position).to({x: billX, y: billY}, duration);
+  billNoise.play();
 }
 
 document.addEventListener('keydown', keydownEventHandler);
@@ -198,6 +217,8 @@ function animate()
       square.position.x = Math.floor(Math.random() * 300) + 50;
       square.position.y = Math.floor(Math.random() * 300) + 50;
 
+      squareNoise.play();
+
       speech = "Square: " + squareText[squareCount];
       squareCount += 1;
     }
@@ -223,6 +244,8 @@ function animate()
       star.position.x = Math.floor(Math.random() * 300) + 50;
       star.position.y = Math.floor(Math.random() * 300) + 50;
 
+      starNoise.play();
+
       speech = "Star: " + starText[starCount];
       starCount += 1;
     }
@@ -247,6 +270,8 @@ function animate()
     {
       circle.position.x = Math.floor(Math.random() * 300) + 50;
       circle.position.y = Math.floor(Math.random() * 300) + 50;
+
+      circleNoise.play();
 
       speech = "Circle: " + circleText;
       circleCount += 1;
